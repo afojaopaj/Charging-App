@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>EV Charge Master - Android 14 EV Charging Calculator</title>
+  
+  <!-- PWA & Mobile Web App Capabilities -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Precision EV Charging Start & Completion Time Calculator for Android 14">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Ambient Background Glow Effects -->
+    <div class="glow-bg cyan-glow"></div>
+    <div class="glow-bg emerald-glow"></div>
+    <div class="glow-bg purple-glow"></div>
+
+    <!-- Header Section -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>EV Charge<span class="gradient-text">Master</span></h1>
+          <p class="sub-text">Smart Charging Planner</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button id="settingsBtn" class="icon-btn" aria-label="Open Settings" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      
+      <!-- Mode Toggle Switcher -->
+      <section class="mode-toggle-card">
+        <div class="segmented-control" role="tablist">
+          <button id="modeStartBtn" class="segment-btn active" role="tab" aria-selected="true" data-mode="start">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Set Start Time</span>
+          </button>
+          <button id="modeEndBtn" class="segment-btn" role="tab" aria-selected="false" data-mode="end">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>Set Target Finish</span>
+          </button>
+        </div>
+        <p id="modeDescription" class="mode-description">
+          Set when you plan to start charging. App calculates when your battery will hit target capacity.
+        </p>
+      </section>
+
+      <!-- Date & Time Input Group -->
+      <section class="card input-card">
+        <h2 id="dateTimeCardTitle" class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Select Start Date & Time
+        </h2>
+
+        <!-- Date Selection Trigger Card -->
+        <div id="dateTrigger" class="date-trigger-card" role="button" tabindex="0" aria-label="Choose Date">
+          <div class="date-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="date-display-info">
+            <span class="label">Date</span>
+            <span id="selectedDateText" class="selected-value">Today, Sep 29</span>
+          </div>
+          <div class="action-hint">
+            <span>Calendar</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <!-- Wheel Scroll Time Picker -->
+        <div class="time-picker-wrapper">
+          <div class="time-picker-header">
+            <span>Hours (24h)</span>
+            <span>Minutes (5m steps)</span>
+          </div>
+          
+          <div class="dual-wheel-container">
+            <div class="wheel-lens"></div>
+            
+            <!-- Hours Scroll Wheel -->
+            <div id="hoursWheel" class="wheel-column" data-wheel="hours">
+              <div class="wheel-scroll"></div>
+            </div>
+
+            <div class="wheel-separator">:</div>
+
+            <!-- Minutes Scroll Wheel (5-min increments) -->
+            <div id="minutesWheel" class="wheel-column" data-wheel="minutes">
+              <div class="wheel-scroll"></div>
+            </div>
+          </div>
+          
+          <div class="quick-time-actions">
+            <button id="nowTimeBtn" class="chip-btn">Set to Now</button>
+            <button id="plus30mBtn" class="chip-btn">+30 mins</button>
+            <button id="plus1hBtn" class="chip-btn">+1 hour</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Capacity Parameters Group -->
+      <section class="card capacity-card">
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="2" ry="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+          Battery Capacity Levels
+        </h2>
+
+        <!-- Start Capacity Slider -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Start Capacity</span>
+            <span id="startCapVal" class="slider-value gradient-cyan">20%</span>
+          </div>
+          <div class="range-wrapper">
+            <input type="range" id="startCapSlider" min="0" max="95" value="20" step="1">
+            <div id="startCapTrack" class="range-progress cyan-progress"></div>
+          </div>
+          <div class="preset-chips">
+            <button class="cap-preset-btn" data-target="start" data-val="10">10%</button>
+            <button class="cap-preset-btn" data-target="start" data-val="20">20%</button>
+            <button class="cap-preset-btn" data-target="start" data-val="30">30%</button>
+            <button class="cap-preset-btn" data-target="start" data-val="50">50%</button>
+          </div>
+        </div>
+
+        <div class="capacity-divider"></div>
+
+        <!-- Target Finished Capacity Slider -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Finished Capacity</span>
+            <span id="endCapVal" class="slider-value gradient-emerald">80%</span>
+          </div>
+          <div class="range-wrapper">
+            <input type="range" id="endCapSlider" min="5" max="100" value="80" step="1">
+            <div id="endCapTrack" class="range-progress emerald-progress"></div>
+          </div>
+          <div class="preset-chips">
+            <button class="cap-preset-btn" data-target="end" data-val="70">70%</button>
+            <button class="cap-preset-btn" data-target="end" data-val="80">80%</button>
+            <button class="cap-preset-btn" data-target="end" data-val="90">90%</button>
+            <button class="cap-preset-btn" data-target="end" data-val="100">100%</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Calculation Results Card -->
+      <section class="card results-card" id="resultsCard">
+        <div class="result-badge" id="resultBadge">
+          <span class="pulse-dot"></span>
+          <span id="resultBadgeText">Calculated Completion Time</span>
+        </div>
+
+        <div class="primary-result">
+          <div id="resultTime" class="result-time-text">--:--</div>
+          <div id="resultDate" class="result-date-sub">Calculating...</div>
+        </div>
+
+        <!-- Charging Stats Breakdown -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-icon">⏱️</span>
+            <span class="stat-label">Duration</span>
+            <span id="statDuration" class="stat-val">-- hrs -- mins</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-icon">⚡</span>
+            <span class="stat-label">Energy Added</span>
+            <span id="statEnergy" class="stat-val">-- kWh</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-icon">🔌</span>
+            <span class="stat-label">Charger Speed</span>
+            <span id="statRate" class="stat-val">-- kW</span>
+          </div>
+        </div>
+
+        <!-- Notification CTA Button (For Start Time Mode) -->
+        <div id="notificationActionArea" class="notification-area hidden">
+          <button id="notifyBtn" class="primary-btn notify-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span>Set Reminder Notification</span>
+          </button>
+          <p id="notifyStatusMsg" class="notify-status"></p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Android 14 Optimized • <span id="currentSettingsSummary">60 kWh @ 7.2 kW</span></p>
+    </footer>
+  </div>
+
+  <!-- FULL MONTH CALENDAR POPUP MODAL -->
+  <div id="calendarModal" class="modal-overlay hidden" aria-hidden="true">
+    <div class="modal-container calendar-modal-container">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>Select Date</h3>
+          <p class="modal-subtitle">Choose any date in the month grid</p>
+        </div>
+        <button id="closeCalendarBtn" class="close-btn" aria-label="Close Calendar">&times;</button>
+      </div>
+      
+      <div class="calendar-wrapper">
+        <!-- Month Navigation Bar -->
+        <div class="calendar-nav">
+          <button id="prevMonthBtn" class="cal-nav-btn" aria-label="Previous Month">&lsaquo;</button>
+          <div id="calendarMonthYear" class="calendar-month-title">September 2026</div>
+          <button id="nextMonthBtn" class="cal-nav-btn" aria-label="Next Month">&rsaquo;</button>
+        </div>
+
+        <!-- Weekday Headers -->
+        <div class="calendar-weekdays">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+
+        <!-- Month Days Grid -->
+        <div id="calendarDaysGrid" class="calendar-days-grid">
+          <!-- Dynamically generated days -->
+        </div>
+
+        <div class="calendar-footer">
+          <button id="todayCalBtn" class="text-btn">Jump to Today</button>
+          <button id="confirmCalBtn" class="primary-btn sm-btn">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settingsModal" class="modal-overlay hidden" aria-hidden="true">
+    <div class="modal-container settings-modal-container">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>App Settings</h3>
+          <p class="modal-subtitle">Configure your vehicle & charger specs</p>
+        </div>
+        <button id="closeSettingsBtn" class="close-btn" aria-label="Close Settings">&times;</button>
+      </div>
+
+      <div class="modal-body settings-body">
+        
+        <!-- Battery Capacity Scroll Wheel Section (30 kWh to 100 kWh) -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Battery Capacity (kWh)</span>
+            <span id="capacityWheelReadout" class="setting-badge">60 kWh</span>
+          </div>
+          <p class="setting-desc">Scroll to set your EV's usable battery size (30 - 100 kWh)</p>
+
+          <div class="settings-wheel-wrapper">
+            <div class="wheel-lens"></div>
+            <div id="batteryWheel" class="wheel-column horizontal-wheel" data-wheel="battery">
+              <div class="wheel-scroll"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charger Speed Rate Scroll Wheel Section (0.1 kW to 11.0 kW) -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Charger Speed Rate (kW)</span>
+            <span id="chargerWheelReadout" class="setting-badge">7.2 kW</span>
+          </div>
+          <p class="setting-desc">Scroll to set charger power output (0.1 - 11.0 kW)</p>
+
+          <div class="settings-wheel-wrapper">
+            <div class="wheel-lens"></div>
+            <div id="chargerWheel" class="wheel-column horizontal-wheel" data-wheel="charger">
+              <div class="wheel-scroll"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charging Loss Efficiency -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Charging Efficiency (%)</span>
+            <span id="efficiencyValReadout" class="setting-badge">90%</span>
+          </div>
+          <p class="setting-desc">Accounts for AC-to-DC conversion & thermal overhead (80-98%)</p>
+          <input type="range" id="efficiencySlider" min="80" max="98" value="90" step="1">
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button id="saveSettingsBtn" class="primary-btn">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript File -->
+  <script src="app.js"></script>
+</body>
+</html>
